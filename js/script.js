@@ -1,4 +1,4 @@
-const apiUrl = 'https://api.github.com/repos/muratkilic1978/persondata/contents/persondata.json';
+const apiUrl = 'https://raw.githubusercontent.com/muratkilic1978/json-sample-data-01/main/sampledata.json';
 
     // Get the container element from the DOM
     const container = document.getElementById('data-container');
@@ -10,33 +10,21 @@ const apiUrl = 'https://api.github.com/repos/muratkilic1978/persondata/contents/
         }
         return response.json();
       })
-      .then(data => {
-        // Parse the base64-encoded content from the GitHub API response
-        const content = atob(data.content);
-        const jsonData = JSON.parse(content);
+      .then(dataArray => {
+        // Assuming the JSON structure is an array of objects
+        dataArray.forEach((data, index) => {
+          // Create a new div for each data object
+          const dataDiv = document.createElement('div');
 
-        // Check if jsonData has a "posts" key and it's an array
-        if (jsonData.posts && Array.isArray(jsonData.posts)) {
-          // Iterate through the array of posts
-          jsonData.posts.forEach(post => {
-            // Create a new div for each post
-            const postDiv = document.createElement('div');
-
-            // Iterate through the properties of each post
-            Object.keys(post).forEach(key => {
-              const element = document.createElement('p');
-              element.textContent = `${key}: ${post[key]}`;
-              postDiv.appendChild(element);
-            });
-
-            // Append the postDiv to the container
-            container.appendChild(postDiv);
+          // Iterate through the properties of each data object
+          Object.keys(data).forEach(key => {
+            const element = document.createElement('p');
+            element.textContent = `${key}: ${data[key]}`;
+            dataDiv.appendChild(element);
           });
-        } else {
-          // Display an error message if the structure is not as expected
-          const errorElement = document.createElement('p');
-          errorElement.textContent = 'Unexpected JSON structure.';
-          container.appendChild(errorElement);
-        }
+
+          // Append the dataDiv to the container
+          container.appendChild(dataDiv);
+        });
       })
       .catch(error => console.error('Error:', error));
